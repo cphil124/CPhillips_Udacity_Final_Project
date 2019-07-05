@@ -68,7 +68,6 @@ def visualize_prediction(prob_list, label_list):
     
     # Create Figure and Axes
     fig, (ax1, ax2) = plt.subplots(1,2)
-    fig.suptitle('Sanity Check Classification', fontsize = 20)
     
     ax1.set_title(cat_to_name[index])
     imshow(im, ax1)
