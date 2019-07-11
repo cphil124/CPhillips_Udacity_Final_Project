@@ -6,6 +6,7 @@ primarily from predict_handler module.
 from predict_handler import  process_image, predict, arg_parser
 import helper
 import os
+import json
 
 
 
@@ -24,10 +25,14 @@ def main():
         im_path = os.getcwd() + '\\' + args.path_to_image
     else:
         im_path = args.path_to_image
+    
+    with open(args.cat_to_name, 'r') as f:
+        cat_to_name = json.load(f)
 
     # Run prediciton on passed image and print results
-    prob_list, flow_list = predict(im_path, model, 5)
-    print(prob_list, flow_list)
+    lab_list, prob_list  = predict(im_path, model, cat_to_name, 5)
+    for i in range(len(prob_list)):
+        print(f'Prediction {i+1}:     Species: {lab_list[i]}, Confidence in Prediction: {prob_list[i]}')
 
     
     

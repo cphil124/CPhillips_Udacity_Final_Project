@@ -33,14 +33,13 @@ def load_checkpoint(checkpoint_path):
         'vgg13' : models.vgg13(pretrained=True),
         'vgg11' : models.vgg11(pretrained=True),
         'densenet121' : models.densenet121(pretrained=True),
-        'densenet169' : models.densenet121(pretrained=True),
-        'densenet201' : models.densenet121(pretrained=True)
+        'densenet169' : models.densenet169(pretrained=True),
+        'densenet201' : models.densenet201(pretrained=True)
         }
 
 
     # Recovering Model from Checkpoint if passed architecture is supported
     if checkpoint['arch'] in supported_archs.keys():
-        print(checkpoint['arch'])
         model = supported_archs[checkpoint['arch']]
         model.arch = checkpoint['arch']
         print('A base-layer {} model has been built.'.format(checkpoint['arch']))
@@ -53,14 +52,13 @@ def load_checkpoint(checkpoint_path):
     
 
     # Set up model with checkpiont attributes
-    model.load_state_dict(checkpoint['state dict'])
     model.classifier = checkpoint['classifier']
+    model.load_state_dict(checkpoint['state dict'])
     model.class_to_idx = checkpoint['class to idx']
     
     # Change model to eval mode to prevent unintended alteration to model via inadvertant training
     model.eval()
     print('CheckPoint Loaded')
-    print(checkpoint['last acc'])
     return model, checkpoint
 
 #Data Prep

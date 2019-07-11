@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from PIL import Image
 from helper import process_image
 
-def predict(image_path, model, topk=5):
+def predict(image_path, model, cat_to_name, topk=5):
     ''' 
     Predict the class (or classes) of an image using a trained deep learning model.
     '''
@@ -36,8 +36,9 @@ def predict(image_path, model, topk=5):
         prob_list.append(prob.item())
     for cls in classes[0]:
         flow_list.append(class_to_idx[str(cls.item()+1)])    
+    lab_list = [cat_to_name[str(cls+1)] for cls in flow_list]
     
-    return prob_list, flow_list
+    return lab_list, prob_list
 
 def arg_parser():
     parser = ArgumentParser(description='Loading a trained model to be used ')
