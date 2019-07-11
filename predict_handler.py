@@ -49,6 +49,7 @@ def arg_parser():
     parser.add_argument('--topk', type=int, help='Number of predictions and their probabilities to be output by program')
     parser.add_argument('--gpu', type=str, dest='device', default='gpu',help='Whether or not to make use of the GPU for running'
                         'model processes. By default, program will try and make use of GPU unless directed otherwise. ')
+    parser.add_argument('--cat_to_name', type=str, default='cat_to_name.json', help='path to category to flower name mapping json')
 
     args = parser.parse_args()
     return args
