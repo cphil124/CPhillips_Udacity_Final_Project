@@ -36,8 +36,8 @@ def arg_parser():
         'vgg13' : models.vgg13(pretrained=True),
         'vgg11' : models.vgg11(pretrained=True),
         'densenet121' : models.densenet121(pretrained=True),
-        'densenet169' : models.densenet121(pretrained=True),
-        'densenet201' : models.densenet121(pretrained=True)
+        'densenet169' : models.densenet169(pretrained=True),
+        'densenet201' : models.densenet201(pretrained=True)
         }
 
 
@@ -57,32 +57,37 @@ def arg_parser():
     
     if model.arch[:3] == 'vgg':
         in_features = 25088
-    elif model.arch[:3] == 'den':
-        in_features = 512
+    elif model.arch[-3:] == '201':
+        in_features = 1920
+    elif model.arch[-3:] == '121':
+        in_features = 1024
+    elif model.arch[-3:] == '169':
+        in_features = 1664
     print(in_features)
 
     # Adding classifier with optional hyperparameters
+
     if args.hidden:
         hidden = int(args.hidden)
+        print(hidden)
         classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(in_features, hidden)),
                                         ('relu', nn.ReLU()),
-                                        ('fc2', nn.Linear(hidden, 128)),
+                                        ('fc2', nn.Linear(hidden, 512)),
                                         ('relu', nn.ReLU()),
                                         ('dropout', nn.Dropout(0.2)),
-                                        ('fc3', nn.Linear(128, 102)),
+                                        ('fc3', nn.Linear(512, 102)),
                                         ('output', nn.LogSoftmax(dim=1))
                                         ]))
-    # If no hidden parameter is passed, 1024 is used as the default. 
+    # If no hidden parameter is passed, 256 is used as the default. 
     else:
-
-            classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(in_features, 256)),
-                                        ('relu', nn.ReLU()),
-                                        ('fc2', nn.Linear(256, 128)),
-                                        ('relu', nn.ReLU()),
-                                        ('dropout', nn.Dropout(0.2)),
-                                        ('fc3', nn.Linear(128, 102)),
-                                        ('output', nn.LogSoftmax(dim=1))
-                                        ]))
+        classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(in_features, 512)),
+                                    ('relu', nn.ReLU()),
+                                    ('fc2', nn.Linear(512, 256)),
+                                    ('relu', nn.ReLU()),
+                                    ('dropout', nn.Dropout(0.2)),
+                                    ('fc3', nn.Linear(256, 102)),
+                                    ('output', nn.LogSoftmax(dim=1))
+                                    ]))
 
     
     model.classifier = classifier
@@ -136,6 +141,9 @@ def train_model(model, trainloader, validloader, optimizer, criterion = nn.NLLLo
         # Counts total number of images passed to model for training. 
         steps = 0
         for inputs, labels in trainloader:
+            # if model.arch[:3] == 'den':
+            #     inputs = inputs.view(, -1)
+            #     print(inputs.size())
             steps += 1
             if device and torch.cuda.is_available():
                 inputs, labels = inputs.to('cuda'), labels.to('cuda')

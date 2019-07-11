@@ -8,3 +8,6 @@ Image Classifier Project.ipynb
 __pychache__
 __pycache__/helper.cpython-37.pyc
 __pycache__/train_handler.cpython-37.pyc
+*.pyc
+*.pth
+*.pyc

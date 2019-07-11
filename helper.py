@@ -10,6 +10,7 @@ import os
 
 def save_checkpoint(model, testloader, dest_path = 'checkpoint.pth'):
     
+
     checkpoint = {
         'arch': model.arch
         ,'classifier': model.classifier
@@ -19,6 +20,7 @@ def save_checkpoint(model, testloader, dest_path = 'checkpoint.pth'):
         } 
     torch.save(checkpoint, dest_path)
     print(f'Model Checkpoint saved to: {dest_path}')
+
 
 
 def load_checkpoint(checkpoint_path):
@@ -38,6 +40,7 @@ def load_checkpoint(checkpoint_path):
 
     # Recovering Model from Checkpoint if passed architecture is supported
     if checkpoint['arch'] in supported_archs.keys():
+        print(checkpoint['arch'])
         model = supported_archs[checkpoint['arch']]
         model.arch = checkpoint['arch']
         print('A base-layer {} model has been built.'.format(checkpoint['arch']))
@@ -50,8 +53,8 @@ def load_checkpoint(checkpoint_path):
     
 
     # Set up model with checkpiont attributes
-    model.classifier = checkpoint['classifier']
     model.load_state_dict(checkpoint['state dict'])
+    model.classifier = checkpoint['classifier']
     model.class_to_idx = checkpoint['class to idx']
     
     # Change model to eval mode to prevent unintended alteration to model via inadvertant training
