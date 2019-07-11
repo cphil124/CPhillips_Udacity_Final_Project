@@ -27,7 +27,7 @@ def main():
     model.class_to_idx = dataset['train'].class_to_idx
 
     # Train model save checkpoint and test model
-    train_model(model, loaders['train'], loaders['valid'], optimizer = optim.Adam(model.classifier.parameters(), lr=args['learning_rate']), device = True)
+    train_model(model, loaders['train'], loaders['valid'], epochs = args['epochs'], optimizer = optim.Adam(model.classifier.parameters(), lr=args['learning_rate']), device = True)
     save_checkpoint(model, loaders['test'], args['save_dir'])
     test_model(model, loaders['test'])
     

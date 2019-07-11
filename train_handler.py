@@ -54,27 +54,33 @@ def arg_parser():
     # Turns gradients off for parameters of pretrained model before adding our own classifier to the model. 
     for param in model.parameters():
         param.requires_grad = False
+    
+    if model.arch[:3] == 'vgg':
+        in_features = 25088
+    elif model.arch[:3] == 'den':
+        in_features = 512
+    print(in_features)
 
     # Adding classifier with optional hyperparameters
     if args.hidden:
         hidden = int(args.hidden)
-        classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(25088, hidden)),
+        classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(in_features, hidden)),
                                         ('relu', nn.ReLU()),
-                                        ('fc2', nn.Linear(hidden, 524)),
+                                        ('fc2', nn.Linear(hidden, 128)),
                                         ('relu', nn.ReLU()),
                                         ('dropout', nn.Dropout(0.2)),
-                                        ('fc3', nn.Linear(524, 102)),
+                                        ('fc3', nn.Linear(128, 102)),
                                         ('output', nn.LogSoftmax(dim=1))
                                         ]))
     # If no hidden parameter is passed, 1024 is used as the default. 
     else:
 
-            classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(25088, 1024)),
+            classifier = nn.Sequential(OrderedDict([('fc1', nn.Linear(in_features, 256)),
                                         ('relu', nn.ReLU()),
-                                        ('fc2', nn.Linear(1024, 524)),
+                                        ('fc2', nn.Linear(256, 128)),
                                         ('relu', nn.ReLU()),
                                         ('dropout', nn.Dropout(0.2)),
-                                        ('fc3', nn.Linear(524, 102)),
+                                        ('fc3', nn.Linear(128, 102)),
                                         ('output', nn.LogSoftmax(dim=1))
                                         ]))
 
